@@ -2,7 +2,7 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 import { getPayload } from '@/lib/payload'
 import { Header, Footer } from '@/components/layout'
-import { RenderBlocks } from '@/components/blocks'
+import { PageContent } from '@/components/PageContent'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -92,18 +92,7 @@ export default async function DynamicPage({ params }: PageProps) {
       <>
         <Header />
         <main>
-          {page.layout && page.layout.length > 0 ? (
-            <RenderBlocks blocks={page.layout} />
-          ) : (
-            <div className="max-w-7xl mx-auto px-4 py-24">
-              <h1 className="text-4xl font-bold text-astrak-dark mb-8">
-                {page.title}
-              </h1>
-              <p className="text-gray-600">
-                Cette page n'a pas encore de contenu. Ajoutez des blocs dans Payload CMS.
-              </p>
-            </div>
-          )}
+          <PageContent initialData={page} />
         </main>
         <Footer />
       </>

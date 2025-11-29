@@ -2,7 +2,7 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 import { getPayload } from '@/lib/payload'
 import { Header, Footer } from '@/components/layout'
-import { RenderBlocks } from '@/components/blocks'
+import { PageContent } from '@/components/PageContent'
 import type { Metadata } from 'next'
 
 // Fallback components for static content (when no CMS data)
@@ -65,13 +65,13 @@ export default async function HomePage() {
 
     const page = pages.docs[0]
 
-    // If page exists and has layout blocks, render dynamically
+    // If page exists and has layout blocks, render dynamically with live preview
     if (page && page.layout && page.layout.length > 0) {
       return (
         <>
           <Header />
           <main>
-            <RenderBlocks blocks={page.layout} />
+            <PageContent initialData={page} />
           </main>
           <Footer />
         </>
