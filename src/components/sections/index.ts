@@ -1,0 +1,8 @@
+export { Hero } from './Hero'
+export { PartnersLogos } from './PartnersLogos'
+export { Expertises } from './Expertises'
+export { Founder } from './Founder'
+export { Results } from './Results'
+export { StarterPack } from './StarterPack'
+export { Testimonials } from './Testimonials'
+export { CTASection } from './CTASection'

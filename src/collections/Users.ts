@@ -2,12 +2,72 @@ import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  admin: {
-    useAsTitle: 'email',
+  labels: {
+    singular: 'Utilisateur',
+    plural: 'Utilisateurs',
   },
-  auth: true,
+  admin: {
+    useAsTitle: 'name',
+    defaultColumns: ['name', 'email', 'role'],
+  },
+  auth: {
+    tokenExpiration: 7200, // 2 heures
+  },
   fields: [
-    // Email added by default
-    // Add more fields as needed
+    {
+      name: 'name',
+      type: 'text',
+      label: 'Nom complet',
+    },
+    {
+      name: 'role',
+      type: 'select',
+      defaultValue: 'admin',
+      options: [
+        { label: 'Admin', value: 'admin' },
+        { label: 'Éditeur', value: 'editor' },
+        { label: 'Auteur', value: 'author' },
+      ],
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'avatar',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Photo de profil',
+    },
+    {
+      name: 'bio',
+      type: 'textarea',
+      label: 'Biographie',
+      maxLength: 300,
+    },
+    {
+      name: 'jobTitle',
+      type: 'text',
+      label: 'Fonction',
+      admin: {
+        description: 'Ex: CEO, Content Manager, etc.',
+      },
+    },
+    {
+      name: 'socials',
+      type: 'group',
+      label: 'Réseaux sociaux',
+      fields: [
+        {
+          name: 'twitter',
+          type: 'text',
+          label: 'Twitter / X',
+        },
+        {
+          name: 'linkedin',
+          type: 'text',
+          label: 'LinkedIn',
+        },
+      ],
+    },
   ],
 }
