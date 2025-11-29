@@ -233,15 +233,10 @@ async function seedHomePage(
   }
 
   if (existingPages.docs.length > 0) {
-    // Update existing page
-    await payload.update({
-      collection: 'pages',
-      id: existingPages.docs[0].id,
-      data: pageData as any,
-    })
-    console.log('  ✅ Home page updated!')
+    // DO NOT update existing page - preserve user modifications
+    console.log('  ⏭️  Home page already exists, skipping to preserve modifications')
   } else {
-    // Create new page
+    // Create new page only if it doesn't exist
     await payload.create({
       collection: 'pages',
       data: pageData as any,

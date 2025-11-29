@@ -176,22 +176,14 @@ h1, h2, h3, h4, h5, h6 {
   background-size: 20px 20px;
 }
 
-/* Scrollbar styling */
+/* Hide scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: #F5F7FA;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #0F0F3D;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #1a1a5e;
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
 /* Line clamp utilities */
