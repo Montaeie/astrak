@@ -2,59 +2,37 @@ import React from 'react'
 import { Header, Footer } from '@/components/layout'
 import { CTASection } from '@/components/sections'
 import { Badge, ArticleCard } from '@/components/ui'
+import { getPayload } from '@/lib/payload'
+import type { Article, Media, Category } from '@/payload-types'
+import type { Metadata } from 'next'
 
-// Mock data - will be replaced with Payload CMS data
-const articles = [
-  {
-    title: 'Consultant SEO : Expert en Visibilité IA Générative',
-    excerpt: 'Consultant GEO : Expert en Visibilité IA Générative Trouvez le meilleur expert pour optimiser votre présence sur ChatGPT...',
-    image: '/images/blog/consultant-geo.jpg',
-    href: '/blog/consultant-geo-expert-visibilite-ia-generative',
-    category: 'IA Générative',
-  },
-  {
-    title: 'Comment obtenir des liens GRATUITS grâce à skeletor ?',
-    excerpt: 'La pyramide inversée est une méthode d\'écriture qui consiste à structurer un texte en commençant par les informations...',
-    image: '/images/blog/liens-gratuits.jpg',
-    href: '/blog/comment-obtenir-liens-gratuits-skeletor',
-    category: 'Netlinking',
-  },
-  {
-    title: 'Agence SEO International : boostez votre visibilité mondiale',
-    excerpt: 'Le monde numérique ne connaît pas de frontières. C\'est pourquoi de nombreuses entreprises font appel à des experts...',
-    image: '/images/blog/seo-international.jpg',
-    href: '/blog/agence-seo-international',
-    category: 'SEO',
-  },
-  {
-    title: 'La Pyramide Inversée : Technique de Rédaction Web pour un meilleur SEO',
-    excerpt: 'La pyramide inversée est une méthode d\'écriture qui consiste à structurer un texte en plaçant les informations...',
-    image: '/images/blog/pyramide-inversee.jpg',
-    href: '/blog/pyramide-inversee-technique-redaction-web',
-    category: 'SEO',
-  },
-  {
-    title: 'Agence SEO Le Havre : boostez votre visibilité locale',
-    excerpt: 'Nous accompagnons les entreprises du Havre pour maximiser leur présence locale et attirer des clients qualifiés...',
-    image: '/images/blog/seo-le-havre.jpg',
-    href: '/blog/agence-seo-le-havre',
-    category: 'SEO Local',
-  },
-  {
-    title: 'Agence SEO Astrak Strasbourg',
-    excerpt: 'Nous accompagnons les entreprises de Strasbourg pour maximiser leur présence en ligne et dominer les résultats...',
-    image: '/images/blog/seo-strasbourg.jpg',
-    href: '/blog/agence-seo-strasbourg',
-    category: 'SEO Local',
-  },
-]
+export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Blog SEO - Astrak | Actualités et conseils SEO',
   description: 'Nos experts SEO, Paid, Content et Data vous partagent des dernières tendances et nouveautés de l\'acquisition digitale.',
 }
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  let articles: Article[] = []
+
+  try {
+    const payload = await getPayload()
+    const result = await payload.find({
+      collection: 'articles',
+      where: {
+        _status: { equals: 'published' },
+      },
+      sort: '-publishedAt',
+      limit: 12,
+      depth: 2,
+    })
+    articles = result.docs
+  } catch (error) {
+    console.error('Error fetching articles:', error)
+  }
+
   return (
     <>
       <Header />
@@ -90,18 +68,31 @@ export default function BlogPage() {
             </div>
 
             {/* Articles Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {articles.map((article, index) => (
-                <ArticleCard
-                  key={index}
-                  title={article.title}
-                  excerpt={article.excerpt}
-                  image={article.image}
-                  href={article.href}
-                  category={article.category}
-                />
-              ))}
-            </div>
+            {articles.length > 0 ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {articles.map((article) => {
+                  const featuredImage = article.featuredImage as Media | undefined
+                  const category = article.category as Category | undefined
+
+                  return (
+                    <ArticleCard
+                      key={article.id}
+                      title={article.title}
+                      excerpt={article.excerpt}
+                      image={featuredImage?.url || '/images/placeholder.jpg'}
+                      href={`/blog/${article.slug}`}
+                      category={category?.name || 'Article'}
+                    />
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-lg">
+                  Aucun article publié pour le moment. Revenez bientôt !
+                </p>
+              </div>
+            )}
           </div>
         </section>
 

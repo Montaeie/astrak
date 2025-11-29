@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { isAdmin, isAdminOrSelf } from '../lib/access'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -12,6 +13,16 @@ export const Users: CollectionConfig = {
   },
   auth: {
     tokenExpiration: 7200, // 2 heures
+  },
+  access: {
+    // Only admins can see all users, others can only see themselves
+    read: isAdminOrSelf,
+    // Only admins can create users
+    create: isAdmin,
+    // Admins can update anyone, users can update themselves
+    update: isAdminOrSelf,
+    // Only admins can delete users
+    delete: isAdmin,
   },
   fields: [
     {

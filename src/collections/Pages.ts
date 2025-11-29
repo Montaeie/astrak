@@ -1,17 +1,8 @@
 import type { CollectionConfig } from 'payload'
 import { revalidatePath } from 'next/cache'
-
-// Helper to get the site URL
-const getSiteURL = () => {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`
-  }
-  return 'http://localhost:3000'
-}
-
+import { getPageURL } from '../lib/getSiteURL'
+import { slugFromTitle } from '../lib/hooks/slugGeneration'
+import { isAdminOrEditor, publishedOrAuthenticated } from '../lib/access'
 import {
   HeroBlock,
   PartnersLogosBlock,
@@ -103,15 +94,9 @@ export const Pages: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
     livePreview: {
-      url: ({ data }) => {
-        const pagePath = data?.slug === 'home' ? '/' : `/${data?.slug || ''}`
-        return `${getSiteURL()}${pagePath}`
-      },
+      url: ({ data }) => getPageURL(data?.slug),
     },
-    preview: (data) => {
-      const pagePath = data?.slug === 'home' ? '/' : `/${data?.slug || ''}`
-      return `${getSiteURL()}${pagePath}`
-    },
+    preview: (data) => getPageURL(data?.slug),
   },
   versions: {
     drafts: {
@@ -122,7 +107,10 @@ export const Pages: CollectionConfig = {
     maxPerDoc: 25,
   },
   access: {
-    read: () => true,
+    read: publishedOrAuthenticated,
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdminOrEditor,
   },
   hooks: {
     afterChange: [
@@ -157,19 +145,7 @@ export const Pages: CollectionConfig = {
         description: 'URL de la page (ex: "a-propos" pour /a-propos). Utilisez "home" pour la page d\'accueil.',
       },
       hooks: {
-        beforeValidate: [
-          ({ value, data }) => {
-            if (!value && data?.title) {
-              return data.title
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '')
-            }
-            return value
-          },
-        ],
+        beforeValidate: [slugFromTitle],
       },
     },
     {

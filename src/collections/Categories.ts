@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { slugFromName } from '../lib/hooks/slugGeneration'
+import { isAdminOrEditor, publicRead } from '../lib/access'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
@@ -11,7 +13,10 @@ export const Categories: CollectionConfig = {
     defaultColumns: ['name', 'slug', 'articlesCount'],
   },
   access: {
-    read: () => true,
+    read: publicRead,
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdminOrEditor,
   },
   fields: [
     {
@@ -30,19 +35,7 @@ export const Categories: CollectionConfig = {
         position: 'sidebar',
       },
       hooks: {
-        beforeValidate: [
-          ({ value, data }) => {
-            if (!value && data?.name) {
-              return data.name
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '')
-            }
-            return value
-          },
-        ],
+        beforeValidate: [slugFromName],
       },
     },
     {

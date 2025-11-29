@@ -25,19 +25,10 @@ import { SiteSettings } from './globals/SiteSettings'
 import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
 
+import { getSiteURL, getPageURL, getArticleURL } from './lib/getSiteURL'
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-
-// Helper to get the site URL
-const getSiteURL = () => {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`
-  }
-  return 'http://localhost:3000'
-}
 
 export default buildConfig({
   admin: {
@@ -50,18 +41,13 @@ export default buildConfig({
     },
     livePreview: {
       url: ({ data, collectionConfig }) => {
-        const baseUrl = getSiteURL()
-
         if (collectionConfig?.slug === 'pages') {
-          const pagePath = data?.slug === 'home' ? '/' : `/${data?.slug || ''}`
-          return `${baseUrl}${pagePath}`
+          return getPageURL(data?.slug)
         }
-
         if (collectionConfig?.slug === 'articles') {
-          return `${baseUrl}/blog/${data?.slug || ''}`
+          return getArticleURL(data?.slug)
         }
-
-        return baseUrl
+        return getSiteURL()
       },
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },

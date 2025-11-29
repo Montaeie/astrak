@@ -20,6 +20,9 @@ import { ResultsBlockRenderer } from './ResultsBlock'
 import { StarterPackBlockRenderer } from './StarterPackBlock'
 import { TestimonialsBlockRenderer } from './TestimonialsBlock'
 import { CTABlockRenderer } from './CTABlock'
+import { ContentBlockRenderer } from './ContentBlock'
+import { TwoColumnBlockRenderer } from './TwoColumnBlock'
+import { CaseStudiesBlockRenderer } from './CaseStudiesBlock'
 
 type LayoutBlock = NonNullable<Page['layout']>[number]
 
@@ -55,14 +58,11 @@ export function RenderBlocks({ blocks }: RenderBlocksProps) {
           case 'cta':
             return <CTABlockRenderer key={key} block={block} />
           case 'content':
-            // TODO: Implement content block renderer with RichText
-            return null
+            return <ContentBlockRenderer key={key} block={block} />
           case 'twoColumn':
-            // TODO: Implement two column block renderer
-            return null
+            return <TwoColumnBlockRenderer key={key} block={block} />
           case 'caseStudies':
-            // TODO: Implement case studies block renderer
-            return null
+            return <CaseStudiesBlockRenderer key={key} block={block} />
           default:
             console.warn(`Unknown block type: ${(block as any).blockType}`)
             return null

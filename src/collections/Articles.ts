@@ -1,16 +1,8 @@
 import type { CollectionConfig } from 'payload'
 import { revalidatePath } from 'next/cache'
-
-// Helper to get the site URL
-const getSiteURL = () => {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`
-  }
-  return 'http://localhost:3000'
-}
+import { getArticleURL } from '../lib/getSiteURL'
+import { slugFromTitle } from '../lib/hooks/slugGeneration'
+import { isAdminOrEditor, isAuthenticated } from '../lib/access'
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -22,13 +14,9 @@ export const Articles: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'author', '_status', 'publishedAt'],
     livePreview: {
-      url: ({ data }) => {
-        return `${getSiteURL()}/blog/${data?.slug || ''}`
-      },
+      url: ({ data }) => getArticleURL(data?.slug),
     },
-    preview: (data) => {
-      return `${getSiteURL()}/blog/${data?.slug || ''}`
-    },
+    preview: (data) => getArticleURL(data?.slug),
   },
   versions: {
     drafts: {
@@ -39,16 +27,14 @@ export const Articles: CollectionConfig = {
     maxPerDoc: 25,
   },
   access: {
+    // Published articles are public, drafts require authentication
     read: ({ req }) => {
-      // Published articles are public
-      // Drafts require authentication
       if (req.user) return true
-      return {
-        _status: {
-          equals: 'published',
-        },
-      }
+      return { _status: { equals: 'published' } }
     },
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdminOrEditor,
   },
   hooks: {
     afterChange: [
@@ -83,19 +69,7 @@ export const Articles: CollectionConfig = {
         position: 'sidebar',
       },
       hooks: {
-        beforeValidate: [
-          ({ value, data }) => {
-            if (!value && data?.title) {
-              return data.title
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '')
-            }
-            return value
-          },
-        ],
+        beforeValidate: [slugFromTitle],
       },
     },
     {

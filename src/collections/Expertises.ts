@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { isAdminOrEditor, publicRead } from '../lib/access'
 
 export const Expertises: CollectionConfig = {
   slug: 'expertises',
@@ -11,7 +12,10 @@ export const Expertises: CollectionConfig = {
     defaultColumns: ['title', 'order'],
   },
   access: {
-    read: () => true,
+    read: publicRead,
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdminOrEditor,
   },
   fields: [
     {
