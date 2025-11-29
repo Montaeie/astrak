@@ -9,10 +9,20 @@ interface PageContentProps {
   initialData: Page
 }
 
+// Get server URL - fallback to localhost for dev
+const getServerURL = () => {
+  if (typeof window !== 'undefined') {
+    return window.location.origin
+  }
+  return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+}
+
 export function PageContent({ initialData }: PageContentProps) {
+  const serverURL = getServerURL()
+
   const { data } = useLivePreview<Page>({
     initialData,
-    serverURL: process.env.NEXT_PUBLIC_SITE_URL || '',
+    serverURL,
     depth: 2,
   })
 
