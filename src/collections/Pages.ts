@@ -1,5 +1,17 @@
 import type { CollectionConfig } from 'payload'
 import { revalidatePath } from 'next/cache'
+
+// Helper to get the site URL
+const getSiteURL = () => {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`
+  }
+  return 'http://localhost:3000'
+}
+
 import {
   HeroBlock,
   PartnersLogosBlock,
@@ -92,13 +104,13 @@ export const Pages: CollectionConfig = {
     defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
     livePreview: {
       url: ({ data }) => {
-        const path = data?.slug === 'home' ? '/' : `/${data?.slug}`
-        return `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}${path}`
+        const pagePath = data?.slug === 'home' ? '/' : `/${data?.slug || ''}`
+        return `${getSiteURL()}${pagePath}`
       },
     },
     preview: (data) => {
-      const path = data?.slug === 'home' ? '/' : `/${data?.slug}`
-      return `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}${path}`
+      const pagePath = data?.slug === 'home' ? '/' : `/${data?.slug || ''}`
+      return `${getSiteURL()}${pagePath}`
     },
   },
   versions: {

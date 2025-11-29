@@ -1,6 +1,17 @@
 import type { CollectionConfig } from 'payload'
 import { revalidatePath } from 'next/cache'
 
+// Helper to get the site URL
+const getSiteURL = () => {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`
+  }
+  return 'http://localhost:3000'
+}
+
 export const Articles: CollectionConfig = {
   slug: 'articles',
   labels: {
@@ -12,11 +23,11 @@ export const Articles: CollectionConfig = {
     defaultColumns: ['title', 'category', 'author', '_status', 'publishedAt'],
     livePreview: {
       url: ({ data }) => {
-        return `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/blog/${data?.slug}`
+        return `${getSiteURL()}/blog/${data?.slug || ''}`
       },
     },
     preview: (data) => {
-      return `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/blog/${data?.slug}`
+      return `${getSiteURL()}/blog/${data?.slug || ''}`
     },
   },
   versions: {
