@@ -6,8 +6,8 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
-// Seed
-import { seed } from './seed'
+// Seed - Only import if needed for manual seeding via /api/seed
+// import { seed } from './seed'
 
 // Collections
 import { Users } from './collections/Users'
@@ -89,8 +89,6 @@ export default buildConfig({
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
   ],
-  onInit: async (payload) => {
-    // Seed the database on first init
-    await seed(payload)
-  },
+  // onInit: Disabled - Database is already seeded
+  // To re-seed manually, use /api/seed endpoint
 })
