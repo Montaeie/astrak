@@ -2,7 +2,10 @@ import type { Payload } from 'payload'
 import path from 'path'
 import fs from 'fs'
 
-// Helper to upload a local image to Payload media collection
+// Base URL for fetching images - uses GitHub raw content as reliable source
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/Montaeie/astrak/main/public'
+
+// Helper to upload an image to Payload media collection
 async function uploadMedia(
   payload: Payload,
   filePath: string,
@@ -23,18 +26,33 @@ async function uploadMedia(
       return existing.docs[0].id as number
     }
 
-    const absolutePath = path.resolve(process.cwd(), filePath)
-
-    if (!fs.existsSync(absolutePath)) {
-      console.error(`  ❌ File not found: ${absolutePath}`)
-      return null
-    }
-
-    const fileBuffer = fs.readFileSync(absolutePath)
     const fileName = path.basename(filePath)
     const mimeType = fileName.endsWith('.png') ? 'image/png' :
                      fileName.endsWith('.svg') ? 'image/svg+xml' :
                      fileName.endsWith('.webp') ? 'image/webp' : 'image/jpeg'
+
+    let fileBuffer: Buffer
+
+    // First try local file system (works in development)
+    const absolutePath = path.resolve(process.cwd(), filePath)
+    if (fs.existsSync(absolutePath)) {
+      console.log(`  📁 Loading from local: ${fileName}`)
+      fileBuffer = fs.readFileSync(absolutePath)
+    } else {
+      // Fallback: fetch from GitHub (works in production/Vercel)
+      const relativePath = filePath.replace('public/', '')
+      const imageUrl = `${GITHUB_RAW_BASE}/${relativePath}`
+      console.log(`  🌐 Fetching from GitHub: ${fileName}`)
+
+      const response = await fetch(imageUrl)
+      if (!response.ok) {
+        console.error(`  ❌ Failed to fetch ${imageUrl}: ${response.status}`)
+        return null
+      }
+
+      const arrayBuffer = await response.arrayBuffer()
+      fileBuffer = Buffer.from(arrayBuffer)
+    }
 
     const media = await payload.create({
       collection: 'media',
