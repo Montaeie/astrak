@@ -47,7 +47,19 @@ function IconBlackHat() {
   )
 }
 
+function IconChatGPT() {
+  return (
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M24 4C12.954 4 4 12.954 4 24s8.954 20 20 20 20-8.954 20-20S35.046 4 24 4z" stroke="#0F0F3D" strokeWidth="2" fill="none"/>
+      <path d="M16 20c0-2.21 1.79-4 4-4h8c2.21 0 4 1.79 4 4v4c0 2.21-1.79 4-4 4h-2l-4 4v-4h-2c-2.21 0-4-1.79-4-4v-4z" stroke="#0F0F3D" strokeWidth="2" fill="none"/>
+      <circle cx="20" cy="22" r="1.5" fill="#0F0F3D"/>
+      <circle cx="28" cy="22" r="1.5" fill="#0F0F3D"/>
+    </svg>
+  )
+}
+
 const iconMap: Record<string, React.ReactNode> = {
+  chatgpt: <IconChatGPT />,
   star: <IconStar />,
   audit: <IconAudit />,
   netlinking: <IconNetlinking />,
