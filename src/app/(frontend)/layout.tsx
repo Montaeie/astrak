@@ -23,7 +23,7 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={outfit.variable}>
-      <body className="antialiased" style={{ fontFamily: 'Outfit, sans-serif' }}>
+      <body className="antialiased" style={{ fontFamily: 'Outfit, sans-serif' }} suppressHydrationWarning>
         {children}
       </body>
     </html>
