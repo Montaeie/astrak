@@ -93,6 +93,17 @@ export interface MediaIds {
   logoPlacedujour: number | null
   // Founder image
   leoFounder: number | null
+  // Icons for Results section
+  iconMybrocante: number | null
+  iconNativusCBD: number | null
+  iconAssistantRenov: number | null
+  // Icons for Expertises section
+  iconChatgpt: number | null
+  iconCheck: number | null
+  iconUpVerte: number | null
+  iconDownRouge: number | null
+  // Logo Astrak
+  logoAstrak: number | null
 }
 
 export async function seedMedia(payload: Payload): Promise<MediaIds> {
@@ -171,6 +182,49 @@ export async function seedMedia(payload: Payload): Promise<MediaIds> {
       payload,
       'public/images/leo-founder.jpg',
       'Léo Poitevin - Fondateur Astrak'
+    ),
+    // Icons for Results section
+    iconMybrocante: await uploadMedia(
+      payload,
+      'public/images/icons/icon-mybrocante.svg',
+      'Icon MyBrocante'
+    ),
+    iconNativusCBD: await uploadMedia(
+      payload,
+      'public/images/icons/icon-nativus-CBD.svg',
+      'Icon Nativus CBD'
+    ),
+    iconAssistantRenov: await uploadMedia(
+      payload,
+      'public/images/icons/icon-assistant-renov.svg',
+      'Icon Assistant Rénov'
+    ),
+    // Icons for Expertises section
+    iconChatgpt: await uploadMedia(
+      payload,
+      'public/images/icons/icon-chatgpt.svg',
+      'Icon ChatGPT'
+    ),
+    iconCheck: await uploadMedia(
+      payload,
+      'public/images/icons/check-icon.svg',
+      'Icon Check'
+    ),
+    iconUpVerte: await uploadMedia(
+      payload,
+      'public/images/icons/icon-up-verte.svg',
+      'Icon Up Verte'
+    ),
+    iconDownRouge: await uploadMedia(
+      payload,
+      'public/images/icons/icon-down-rouge.svg',
+      'Icon Down Rouge'
+    ),
+    // Logo Astrak
+    logoAstrak: await uploadMedia(
+      payload,
+      'public/images/logo-astrak.svg',
+      'Logo Astrak'
     ),
   }
 
