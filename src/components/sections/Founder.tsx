@@ -9,7 +9,7 @@ export function Founder() {
         {/* Main container */}
         <div className="relative">
           {/* Blue background - full width, shorter height so image overflows */}
-          <div className="absolute inset-x-0 top-8 bottom-8 bg-astrak-dark rounded-3xl overflow-hidden">
+          <div className="absolute inset-x-0 top-0 bottom-0 md:top-8 md:bottom-8 bg-astrak-dark rounded-3xl overflow-hidden">
             {/* Ellipse radial gradient in top right */}
             <div
               className="absolute -top-20 -right-20 w-[500px] h-[500px] rounded-full opacity-40 pointer-events-none"
